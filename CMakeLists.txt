@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -g -O2")
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
+add_subdirectory(${PROJECT_SOURCE_DIR}/include/ouc_server)
 
-add_executable(test "${PROJECT_SOURCE_DIR}/example/epoll_tcp_loop.cpp")
+add_executable(test "${PROJECT_SOURCE_DIR}/example/test_http_request.cpp")
+target_link_libraries(test PRIVATE ouc_server_lib)
