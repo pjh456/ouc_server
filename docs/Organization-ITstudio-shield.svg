@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="153" height="18" role="img" aria-label="Organization: ITstudio">
+<title>Organization: ITStudio</title>
+<linearGradient id="s" x2="0" y2="100%">
+<stop offset="0" stop-color="#fff" stop-opacity=".7"/>
+<stop offset=".1" stop-color="#aaa" stop-opacity=".1"/>
+<stop offset=".9" stop-color="#000" stop-opacity=".3"/>
+<stop offset="1" stop-color="#000" stop-opacity=".5"/>
+</linearGradient><clipPath id="r"><rect width="153" height="18" rx="4" fill="#fff"/>
+</clipPath><g clip-path="url(#r)"><rect width="98" height="18" fill="#555"/>
+<rect x="98" width="55" height="18" fill="#f8d1d9"/><rect width="153" height="18" fill="url(#s)"/></g>
+<g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">
+<image x="5" y="2" width="14" height="14" href="data:image/svg+xml;base64,PHN2ZyBpZD0ibG9nbyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgd2lkdGg9IjYyIiBoZWlnaHQ9IjY2IiB2aWV3Qm94PSIwIDAgNjIgNjYiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuY2xzLTEgewogICAgICAgIGZpbGw6ICNmOGQxZDk7CiAgICAgIH0KCiAgICAgIC5jbHMtMSwgLmNscy0yLCAuY2xzLTMgewogICAgICAgIGZpbGwtcnVsZTogZXZlbm9kZDsKICAgICAgfQoKICAgICAgLmNscy0yIHsKICAgICAgICBmaWxsOiAjYmFiNWVjOwogICAgICB9CgogICAgICAuY2xzLTMgewogICAgICAgIGZpbGw6IHVybCgjbGluZWFyLWdyYWRpZW50KTsKICAgICAgfQogICAgPC9zdHlsZT4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibGluZWFyLWdyYWRpZW50IiB4MT0iMTkuNDEiIHkxPSI2NiIgeDI9IjQ0LjU5IiB5Mj0iMTIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjYmFiNWVjIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2YxYjdiZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHBhdGggaWQ9ImNscy0xIiBjbGFzcz0iY2xzLTEiIGQ9Ik0wLDE3TDMwLDBWMzlMMCw1N1YxN1oiLz4KICA8cGF0aCBpZD0iY2xzLTIiIGNsYXNzPSJjbHMtMiIgZD0iTTMzLDM5TDYyLDU2VjE3TDMzLDBWMzlaIi8+CiAgPHBhdGggaWQ9ImNscy0zIiBkYXRhLW5hbWU9ImNscy0zIiBjbGFzcz0iY2xzLTMiIGQ9Ik0xOCwyOEw0NiwxMlY0OUwxOCw2NlYyOFoiLz4KPC9zdmc+Cg=="/><text aria-hidden="true" x="585" y="140" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="710">Organization</text><text x="585" y="130" transform="scale(.1)" fill="#fff" textLength="710">Organization</text><text aria-hidden="true" x="1245" y="140" fill="#ccc" fill-opacity=".3" transform="scale(.1)" textLength="450">ITStudio</text><text x="1245" y="130" transform="scale(.1)" fill="#333" textLength="450">ITStudio</text></g></svg>
