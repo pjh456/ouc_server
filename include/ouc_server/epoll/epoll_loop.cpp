@@ -23,14 +23,23 @@ namespace ouc_server
 
         void EpollLoop::run(int timeout_ms)
         {
-            std::vector<struct epoll_event> events(1024);
-            int nfds = epoll_wait(epoll_fd, events.data(), events.size(), timeout_ms);
-
-            for (int i = 0; i < nfds; ++i)
+            std::vector<struct epoll_event> events(64);
+            while (true)
             {
-                int fd = events[i].data.fd;
-                if (events_map.count(fd))
-                    events_map[fd].callback();
+                int nfds = epoll_wait(epoll_fd, events.data(), events.size(), timeout_ms);
+                if (nfds < 0)
+                {
+                    perror("epoll_wait");
+                    break;
+                }
+                for (int i = 0; i < nfds; ++i)
+                {
+                    int fd = events[i].data.fd;
+                    if (events_map.count(fd))
+                    {
+                        events_map[fd].callback();
+                    }
+                }
             }
         }
 
