@@ -1,14 +1,17 @@
-# OUC Server
-
+<br>
 <div align="center">
     <img src="docs/爱特logo.svg" width=100/>
 </div>
-
+<div align="center">
+    <font face="console" size=6>OUC Server</font>
+</div>
+<br>
 <div align="center">
     <img src="docs/Organization-ITstudio-shield.svg"/>
     <img src="https://img.shields.io/badge/Language-C++17-blue">
     <img src="https://img.shields.io/badge/Package-CMake-red">
 </div>
+<br>
 
 本项目由中国海洋大学爱特工作室组织开发，目标是基于 Linux 构建一个 **高性能、可扩展的现代 C++ HTTP 网络编程库**，为学习和实践网络编程提供平台，同时探索事件驱动架构、异步 I/O、协议封装等关键技术。
 
