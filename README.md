@@ -10,7 +10,6 @@
     <img src="https://img.shields.io/badge/Package-CMake-red">
 </div>
 
-
 本项目由中国海洋大学爱特工作室组织开发，目标是基于 Linux 构建一个 **高性能、可扩展的现代 C++ HTTP 网络编程库**，为学习和实践网络编程提供平台，同时探索事件驱动架构、异步 I/O、协议封装等关键技术。
 
 ## ✨ 项目目标
@@ -43,7 +42,7 @@ make -j4
 ### 📖 运行示例
 
 ```bash
-./example
+./examples
 ```
 
 ### 📂 仓库结构
@@ -52,7 +51,7 @@ make -j4
 ouc_server
 ├── include/ # 公共头文件
 ├── src/ # 源代码
-├── example/ # 示例程序
+├── examples/ # 示例程序
 ├── tests/ # 单元测试 
 ├── docs/ # 文档 
 ├── CMakeLists.txt 
