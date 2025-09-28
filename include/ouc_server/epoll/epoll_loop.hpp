@@ -14,15 +14,18 @@ namespace ouc_server
 {
     namespace epoll
     {
+        using EpollCallback = std::function<void()>;
+
         struct Event
         {
             int fd;
             uint32_t events;
-            std::function<void()> callback;
+            EpollCallback callback;
         };
 
         class EpollLoop
         {
+        public:
         private:
             int epoll_fd;
             std::unordered_map<int, Event> events_map;
@@ -33,7 +36,14 @@ namespace ouc_server
             ~EpollLoop();
 
         public:
-            bool add_fd(int, uint32_t, std::function<void()>);
+            void run(int = -1);
+
+            bool add_fd(int, uint32_t, EpollCallback);
+            bool modify_fd(int, uint32_t);
+            bool remove_fd(int);
+
+        private:
+            struct epoll_event pack_event(int, uint32_t);
         };
     }
 }
