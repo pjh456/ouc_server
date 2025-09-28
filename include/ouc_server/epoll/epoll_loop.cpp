@@ -11,9 +11,12 @@ namespace ouc_server
     namespace epoll
     {
 
-        EpollLoop::EpollLoop()
+        EpollLoop::EpollLoop(size_t n)
+            : pool(n)
         {
             epoll_fd = epoll_create1(0);
+            if (epoll_fd < 0)
+                perror("epoll_create1");
         }
 
         EpollLoop::~EpollLoop()
@@ -21,24 +24,27 @@ namespace ouc_server
             close(epoll_fd);
         }
 
-        void EpollLoop::run(int timeout_ms)
+        void EpollLoop::poll(const int timeout_ms, const int MAX_EVENTS)
         {
-            std::vector<struct epoll_event> events(64);
-            while (true)
+            epoll_event events[MAX_EVENTS];
+
+            int nfds = epoll_wait(epoll_fd, events, MAX_EVENTS, timeout_ms);
+            if (nfds < 0)
             {
-                int nfds = epoll_wait(epoll_fd, events.data(), events.size(), timeout_ms);
-                if (nfds < 0)
+                if (errno == EINTR)
+                    return;
+                perror("epoll_wait");
+                return;
+            }
+
+            for (int i = 0; i < nfds; ++i)
+            {
+                int fd = events[i].data.fd;
+                if (callbacks.count(fd))
                 {
-                    perror("epoll_wait");
-                    break;
-                }
-                for (int i = 0; i < nfds; ++i)
-                {
-                    int fd = events[i].data.fd;
-                    if (events_map.count(fd))
-                    {
-                        events_map[fd].callback();
-                    }
+                    pool.sumbit(
+                        [ev = callbacks[fd], fd]()
+                        { ev.callback(fd); });
                 }
             }
         }
@@ -47,7 +53,7 @@ namespace ouc_server
         {
             auto ev = pack_event(fd, event_flags);
             int code = epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &ev);
-            events_map[fd] = Event{fd, event_flags, callback};
+            callbacks[fd] = Event{fd, event_flags, std::move(callback)};
             return code == 0;
         }
 
@@ -55,14 +61,14 @@ namespace ouc_server
         {
             auto ev = pack_event(fd, event_flags);
             int code = epoll_ctl(epoll_fd, EPOLL_CTL_MOD, fd, &ev);
-            events_map[fd].events = event_flags;
+            callbacks[fd].events = event_flags;
             return code == 0;
         }
 
         bool EpollLoop::remove_fd(int fd)
         {
             int code = epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, nullptr);
-            events_map.erase(fd);
+            callbacks.erase(fd);
             return code == 0;
         }
 

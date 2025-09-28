@@ -1,6 +1,7 @@
 #include <epoll/epoll_loop.hpp>
 
 #include <fcntl.h>
+#include <string.h>
 #include <iostream>
 
 int set_nonblock(int fd)
@@ -42,37 +43,45 @@ int main()
 
     puts("Server listening on port 8080...");
 
-    EpollLoop loop;
+    EpollLoop loop(4);
 
     loop.add_fd(
         sock_fd,
         EPOLLIN,
-        [&]()
+        [&](int fd)
         {
-        while (true) {
-            int client_fd = accept(sock_fd, nullptr, nullptr);
-            if (client_fd < 0) break;
+        while (true)
+        {
+            int client_fd = accept(fd, nullptr, nullptr);
+            if (client_fd < 0)
+            {
+                if (errno == EAGAIN || errno == EWOULDBLOCK) 
+                    break;
+                perror("accept");
+                break;
+            }
             set_nonblock(client_fd);
-            std::cout << "New client: " << client_fd << "\n";
 
             loop.add_fd(
                 client_fd, 
                 EPOLLIN, 
-                [&, client_fd]() 
+                [](int cfd)
                 {
-                char buf[1024];
-                ssize_t r = read(client_fd, buf, sizeof(buf));
-                if (r <= 0) {
-                    std::cout << "Client " << client_fd << " disconnected\n";
-                    loop.remove_fd(client_fd);
-                    close(client_fd);
-                    return;
-                }
-                std::string msg(buf, r);
-                std::cout << "Recv: " << msg;
-                write(client_fd, buf, r);
+                    char buf[4096];
+                    ssize_t n = read(cfd, buf, sizeof(buf));
+                    write(cfd, buf, n);
+                    if ((!memcmp("exit", buf, 4))) 
+                    {
+                        close(cfd);
+                        return;
+                    }
+                    std::string data(buf, n);
+                    std::cout<< "recv:" << data;
             });
-        } });
+    } });
 
-    loop.run();
+    while (true)
+    {
+        loop.poll(10);
+    }
 }

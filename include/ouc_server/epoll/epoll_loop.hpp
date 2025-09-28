@@ -10,11 +10,13 @@
 #include <sys/epoll.h>
 #include <netinet/in.h>
 
+#include <utils/thread_pool.hpp>
+
 namespace ouc_server
 {
     namespace epoll
     {
-        using EpollCallback = std::function<void()>;
+        using EpollCallback = std::function<void(int)>;
 
         struct Event
         {
@@ -25,18 +27,19 @@ namespace ouc_server
 
         class EpollLoop
         {
-        public:
         private:
             int epoll_fd;
-            std::unordered_map<int, Event> events_map;
+            std::unordered_map<int, Event> callbacks;
+
+            ouc_server::utils::ThreadPool pool;
 
         public:
-            EpollLoop();
+            EpollLoop(size_t = 64);
 
             ~EpollLoop();
 
         public:
-            void run(int = -1);
+            void poll(const int = 0, const int = 64);
 
             bool add_fd(int, uint32_t, EpollCallback);
             bool modify_fd(int, uint32_t);
