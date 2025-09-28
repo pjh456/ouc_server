@@ -3,7 +3,7 @@
     <img src="docs/爱特logo.svg" width=100/>
 </div>
 <div align="center">
-    <font face="console" size=6>OUC Server</font>
+    <font face="console" size=15>OUC Server</font>
 </div>
 <br>
 <div align="center">
