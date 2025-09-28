@@ -1,6 +1,15 @@
-# OUC Server ![](docs/爱特logo.svg)
+# OUC Server
 
-![](docs/Organization-ITstudio-shield.svg)
+<div align="center">
+    <img src="docs/爱特logo.svg" width=100/>
+</div>
+
+<div align="center">
+    <img src="docs/Organization-ITstudio-shield.svg"/>
+    <img src="https://img.shields.io/badge/Language-C++17-blue">
+    <img src="https://img.shields.io/badge/Package-CMake-red">
+</div>
+
 
 本项目由中国海洋大学爱特工作室组织开发，目标是基于 Linux 构建一个 **高性能、可扩展的现代 C++ HTTP 网络编程库**，为学习和实践网络编程提供平台，同时探索事件驱动架构、异步 I/O、协议封装等关键技术。
 
@@ -9,7 +18,7 @@
 - 提供简洁易用的 **Socket 封装** 接口
 - 支持 **多路复用**（epoll/kqueue等）
 - 内置 **事件循环** 与 **任务调度**
-- 扩展常用协议（HTTP、WebSocket等）
+- 封装常用协议（HTTP、WebSocket等）
 - 作为教学和研究平台，便于社团成员学习与贡献
 
 ## 🚀 快速开始
@@ -34,7 +43,7 @@ make -j4
 ### 📖 运行示例
 
 ```bash
-./examples
+./example
 ```
 
 ### 📂 仓库结构
@@ -43,7 +52,7 @@ make -j4
 ouc_server
 ├── include/ # 公共头文件
 ├── src/ # 源代码
-├── examples/ # 示例程序
+├── example/ # 示例程序
 ├── tests/ # 单元测试 
 ├── docs/ # 文档 
 ├── CMakeLists.txt 
@@ -55,7 +64,7 @@ ouc_server
 我们欢迎任何形式的贡献！
 
 1. Fork 本仓库
-2. 从 dev 分支新建功能分支 feature/...
+2. 从 `dev` 分支新建功能分支 `feature/...`
 3. 提交 Pull Request，并等待 Review
 4. 通过 CI 检查和 Review 后合并到主仓库
 
@@ -74,4 +83,5 @@ ouc_server
 哈哈，没写
 
 ## 📜 许可证
+
 本项目采用 [MIT License](/LICENSE) 开源。

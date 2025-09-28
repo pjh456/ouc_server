@@ -6,7 +6,7 @@
 
 - 使用 **C++17** 或更高版本。
 - 优先使用标准库功能，避免非必要的第三方依赖。
-- 引入第三方依赖时，若有 CMake 或 Github 仓库时应避免直接复制文件于本项目。
+- 引入第三方依赖时，若有 CMake 或 Github 仓库时应避免 **直接复制文件于本项目**。
 
 ## 2. 文件与目录命名
 
@@ -126,7 +126,7 @@
     ```cpp
     int sum = a + b;
     ```
-- 控制语句中除单语句及 `do while` 外均需要添加大括号作用域：
+- 控制语句中除单语句及 `do while` 外均需要 **添加大括号作用域**：
     - 条件分支
         ```cpp
         // Wrong!
@@ -212,18 +212,20 @@
 3. 第三方库头文件
 4. 其他模块头文件
 
+模块内部的头文件应当利用 CMake 配置后 **使用尖括号而非双引号** 包含。
+
 示例：
 ```cpp
-#include "tcp_server.hpp"
+#include <server/tcp_server.hpp>
 
 #include <vector>
 #include <string>
 #include <iostream>
 
-#include "third_party/some_c_lib.h"
-#include "third_party/some_cpp_lib.hpp"
+#include <third_party/some_c_lib.h>
+#include <third_party/some_cpp_lib.hpp>
 
-#include "event_loop.hpp"
+#include <event/event_loop.hpp>
 ```
 
 ## 10. 测试与调试
