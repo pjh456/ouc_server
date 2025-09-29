@@ -66,9 +66,31 @@ namespace ouc_server
 
         bool TCPSocket::close() { return ::close(listen_fd) == 0; }
 
-        ssize_t TCPSocket::send(const char *buf, size_t len) { return ::send(listen_fd, buf, len, 0); }
+        ssize_t TCPSocket::send(const char *buf, size_t len)
+        {
+            size_t sent = 0;
+            while (sent < len)
+            {
+                ssize_t n = ::send(listen_fd, buf + sent, len - sent, 0);
+                if (n < 0)
+                {
+                    if (errno == EINTR)
+                        continue;
+                    if (errno == EAGAIN || errno == EWOULDBLOCK)
+                        break;
+                    return -1;
+                }
+                if (n == 0)
+                    break;
+                sent += n;
+            }
+
+            return sent;
+        }
 
         ssize_t TCPSocket::send(const char *buf) { return this->send(buf, sizeof(buf)); }
+
+        ssize_t TCPSocket::send(const std::string &str) { return this->send(str.c_str()); }
 
         ssize_t TCPSocket::recv(void *buf, size_t len) { return ::recv(listen_fd, buf, len, 0); }
     }

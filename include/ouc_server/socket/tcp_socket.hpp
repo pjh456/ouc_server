@@ -35,6 +35,8 @@ namespace ouc_server
         public:
             ssize_t send(const char *, size_t);
             ssize_t send(const char *);
+            ssize_t send(const std::string &);
+
             ssize_t recv(void *, size_t);
         };
     }
