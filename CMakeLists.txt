@@ -10,5 +10,5 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -g -O2")
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/include/ouc_server)
 
-add_executable(test "${PROJECT_SOURCE_DIR}/examples/epoll_tcp_loop.cpp")
+add_executable(test "${PROJECT_SOURCE_DIR}/examples/test_tcp_socket.cpp")
 target_link_libraries(test PRIVATE ouc_server_lib)
