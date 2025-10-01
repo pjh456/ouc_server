@@ -12,14 +12,37 @@ namespace ouc_server
         {
         }
 
-        TCPServer::~TCPServer()
+        TCPServer::~TCPServer() noexcept
         {
-            // Gracefully close all client connections before shutting down
-            for (auto &[k, v] : clients)
-                v.close();
+            // Destructor must never throw.
+            // Wrap all potentially throwing operations in try/catch.
+            try
+            {
+                for (auto &[k, v] : clients)
+                {
+                    try
+                    {
+                        v.close(); // ensure socket closed
+                    }
+                    catch (...)
+                    {
+                        // swallow to keep noexcept guarantee
+                    }
+                }
 
-            // Close the listening socket
-            server_socket.close();
+                try
+                {
+                    server_socket.close();
+                }
+                catch (...)
+                {
+                    // swallow to keep noexcept guarantee
+                }
+            }
+            catch (...)
+            {
+                // Final catch-all, should never happen
+            }
         }
 
         bool TCPServer::start(const std::string &ip, uint16_t port)
@@ -37,15 +60,26 @@ namespace ouc_server
                 return false;
 
             // Register listening socket with epoll
-            epoll_loop.add_fd(
+            // Important: wrap callback in try/catch to prevent exception
+            // escaping into epoll loop.
+            return epoll_loop.add_fd(
                 server_socket.get_fd(),
                 EPOLLIN,
                 [this](int)
                 {
-                    // Accept new client connection when epoll signals readable
-                    handle_new_connection();
+                    try
+                    {
+                        handle_new_connection();
+                    }
+                    catch (const std::exception &e)
+                    {
+                        // continue server loop, ignore this event
+                    }
+                    catch (...)
+                    {
+                        // unknown error happened
+                    }
                 });
-            return true;
         }
 
         bool TCPServer::add_fd(int fd, ouc_server::ouc_socket::TCPSocket &&tcp_socket)
@@ -57,10 +91,7 @@ namespace ouc_server
             if (clients.count(fd) || tcp_socket.get_fd() < 0)
                 return false;
 
-            // Add client socket to active client map
-            clients.emplace(fd, std::move(tcp_socket));
-
-            // Register client socket with epoll to monitor for input events
+            // First try adding to epoll
             if (!epoll_loop.add_fd(
                     fd,
                     EPOLLIN,
@@ -68,11 +99,37 @@ namespace ouc_server
                     {
                         this->handle_client_event(fd);
                     }))
+            {
                 return false;
+            }
 
-            // Fire connection callback if registered
+            // Use temporary to ensure strong exception safety:
+            // if emplace throws, tmp will be destroyed properly.
+            ouc_server::ouc_socket::TCPSocket temp = std::move(tcp_socket);
+
+            // Only insert into clients if epoll registration succeeded
+            auto [it, inserted] = clients.emplace(fd, std::move(temp));
+            if (!inserted)
+            {
+                // Rollback epoll registration if insertion failed
+                epoll_loop.remove_fd(fd);
+                return false;
+            }
+
             if (on_connection_callback)
-                on_connection_callback(clients.at(fd));
+            {
+                try
+                {
+                    on_connection_callback(it->second);
+                }
+                catch (...)
+                {
+                    // Rollback if callback throws
+                    epoll_loop.remove_fd(fd);
+                    clients.erase(it);
+                    // Do NOT rethrow: keep server stable
+                }
+            }
 
             return true;
         }
@@ -95,19 +152,38 @@ namespace ouc_server
             if ((!clients.count(fd)) || fd < 0)
                 return false;
 
-            // Remove from epoll monitoring
-            if (!epoll_loop.remove_fd(client.get_fd()))
+            // Always erase from map first to keep internal state consistent
+            auto it = clients.find(fd);
+            if (it == clients.end())
                 return false;
 
-            // Fire close callback if registered
+            auto rm_socket = std::move(it->second);
+            clients.erase(it);
+
+            // Try to remove from epoll
+            if (!epoll_loop.remove_fd(fd))
+            {
+                // Best effort rollback: not fatal, but we already removed from map
+                // maybe log warning here
+            }
+
+            // Safe to close now
+            bool closed = rm_socket.close();
+
+            // Callback is external, wrap in try/catch to not break server loop
             if (on_close_callback)
-                on_close_callback(client);
+            {
+                try
+                {
+                    on_close_callback(rm_socket);
+                }
+                catch (...)
+                {
+                    // Log error, swallow exception to keep server stable
+                }
+            }
 
-            // Erase from active client list
-            clients.erase(client.get_fd());
-
-            // Close underlying socket
-            return client.close();
+            return closed;
         }
 
         bool TCPServer::remove_fd(int fd)
